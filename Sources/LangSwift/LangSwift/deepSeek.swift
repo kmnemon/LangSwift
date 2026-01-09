@@ -9,6 +9,7 @@ import Foundation
 
 enum DeepSeekModel: String {
     case deepSeekChat = "deepseek-chat"
+    case deepSeekReasoner = "deepseek-reasoner"
 }
 
 struct ChatMessageBody<T: BaseMessage> : Codable {
@@ -17,9 +18,17 @@ struct ChatMessageBody<T: BaseMessage> : Codable {
     var stream: Bool
 }
 
+struct Thinking: Codable {
+    var type: String
+}
+
 class DeepSeek: LLMProtocol {
     private let baseURLStr = "https://api.deepseek.com"
     private var mode: DeepSeekModel = .deepSeekChat
+    private var thinking: Thinking?
+    private var frequencyPenalty: Double?
+
+    
     
     init() {}
     init(mode: DeepSeekModel) {
