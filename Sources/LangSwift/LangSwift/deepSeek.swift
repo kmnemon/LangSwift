@@ -27,8 +27,6 @@ class DeepSeek: LLMProtocol {
     private var mode: DeepSeekModel = .deepSeekChat
     private var thinking: Thinking?
     private var frequencyPenalty: Double?
-
-    
     
     init() {}
     init(mode: DeepSeekModel) {
