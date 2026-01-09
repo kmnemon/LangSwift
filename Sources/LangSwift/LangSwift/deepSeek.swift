@@ -7,28 +7,34 @@
 
 import Foundation
 
-enum DeepSeekModelType: String {
+enum DeepSeekModel: String {
     case deepSeekChat = "deepseek-chat"
 }
 
-struct MessageBody: Codable {
+struct ChatMessage<T: BaseMessage> : Codable {
     var model: String
-    var messages: [Message]
+    var messages: [T]
     var stream: Bool
-}
-
-struct Message: Codable {
-    var role: String
-    var content: String
 }
 
 class DeepSeek: LLMProtocol {
     private let baseURLStr = "https://api.deepseek.com"
+    private var mode: DeepSeekModel = .deepSeekChat
     
+    init() {}
+    init(mode: DeepSeekModel) {
+        self.mode = mode
+    }
     
-    func invoke(message: String) async -> String {
+    func invoke(userContent: String) async -> String {
         var request = chatRequest()
-        return await sendMessageAndGetRespond(request: request, message: message)
+        var messages: [Message] = makeMessage(userContent: userContent)
+        return await sendMessageAndGetRespond(request: request, messages: messages)
+    }
+    
+    func invoke(messages: [Message]) async -> String {
+        var request = chatRequest()
+        return await sendMessageAndGetRespond(request: request, messages: messages)
     }
     
     private func chatURL() -> URL {
@@ -44,35 +50,36 @@ class DeepSeek: LLMProtocol {
         return request
     }
     
-    private func makeMessageBody(userContent: String) -> MessageBody {
-        MessageBody(
-            model: DeepSeekModelType.deepSeekChat.rawValue,
-            messages: [
-                Message(role: "system", content: "You are a helpful assistant."),
-                Message(role: "user", content: userContent)
-            ],
-            stream: false
-        )
+    private func makeMessage(userContent: String) -> [Message] {
+        return [
+            Message(role: Role.system, content: "You are a helpful assistant."),
+            Message(role: Role.user, content: userContent)
+        ]
     }
     
-    private func sendMessageAndGetRespond(request: URLRequest, message: String) async -> String {
-        var msgBody = makeMessageBody(userContent: message)
+    private func sendMessageAndGetRespond(request: URLRequest, messages: [Message]) async -> String {
+        var chatMsg = makeChatMessage(messages: messages)
         
-        guard let msgBodyJson = try? JSONEncoder().encode(msgBody) else {
+        guard let chatMsgJson = try? JSONEncoder().encode(chatMsg) else {
             return "Failed to encode user content"
         }
         
         do {
-            let(data, _) = try await URLSession.shared.upload(for: request, from: msgBodyJson)
+            let(data, _) = try await URLSession.shared.upload(for: request, from: chatMsgJson)
             
             //TODO: receive data
             return ""
-            
             
         } catch {
             return "some error happened, please try again"
         }
     }
+    
+    private func makeChatMessage(messages: [Message]) -> ChatMessage<Message> {
+        return ChatMessage(
+            model: mode.rawValue,
+            messages: messages,
+            stream: false
+        )
+    }
 }
-
-

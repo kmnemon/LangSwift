@@ -17,3 +17,7 @@ enum LLMKey: String {
     }
 }
 
+enum Role: String, Codable {
+    case system = "system"
+    case user = "user"
+}
