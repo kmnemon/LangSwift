@@ -11,7 +11,7 @@ enum DeepSeekModel: String {
     case deepSeekChat = "deepseek-chat"
 }
 
-struct ChatMessage<T: BaseMessage> : Codable {
+struct ChatMessageBody<T: BaseMessage> : Codable {
     var model: String
     var messages: [T]
     var stream: Bool
@@ -58,14 +58,14 @@ class DeepSeek: LLMProtocol {
     }
     
     private func sendMessageAndGetRespond(request: URLRequest, messages: [Message]) async -> String {
-        var chatMsg = makeChatMessage(messages: messages)
+        var chatMsgBody = makeChatMessageBody(messages: messages)
         
-        guard let chatMsgJson = try? JSONEncoder().encode(chatMsg) else {
+        guard let chatMsgBodyJson = try? JSONEncoder().encode(chatMsgBody) else {
             return "Failed to encode user content"
         }
         
         do {
-            let(data, _) = try await URLSession.shared.upload(for: request, from: chatMsgJson)
+            let(data, _) = try await URLSession.shared.upload(for: request, from: chatMsgBodyJson)
             
             //TODO: receive data
             return ""
@@ -75,8 +75,8 @@ class DeepSeek: LLMProtocol {
         }
     }
     
-    private func makeChatMessage(messages: [Message]) -> ChatMessage<Message> {
-        return ChatMessage(
+    private func makeChatMessageBody(messages: [Message]) -> ChatMessageBody<Message> {
+        return ChatMessageBody(
             model: mode.rawValue,
             messages: messages,
             stream: false
