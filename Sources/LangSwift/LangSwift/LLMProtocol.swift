@@ -7,7 +7,7 @@
 import Foundation
 
 protocol  LLMProtocol {
-    func invoke(msg: String) -> String
+    func invoke(message: String) async throws -> String
 }
 
 extension LLMProtocol {
