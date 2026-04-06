@@ -25,22 +25,30 @@ struct Thinking: Codable {
 class DeepSeek: LLMProtocol {
     private let baseURLStr = "https://api.deepseek.com"
     private var mode: DeepSeekModel = .deepSeekChat
+    private var key: String
     private var thinking: Thinking?
     private var frequencyPenalty: Double?
     
-    init() {}
-    init(mode: DeepSeekModel) {
+    init() throws {
+        guard let key = LLMKey.value(for: .deepSeek) else { throw LLMError.missingAPIKey }
+        self.key = key
+    }
+    
+    init(mode: DeepSeekModel) throws {
         self.mode = mode
+        
+        guard let key = LLMKey.value(for: .deepSeek) else { throw LLMError.missingAPIKey }
+        self.key = key
     }
     
     func invoke(userContent: String) async -> String {
-        var request = chatRequest()
-        var messages: [Message] = makeMessage(userContent: userContent)
+        let request = chatRequest()
+        let messages: [Message] = makeMessage(userContent: userContent)
         return await sendMessageAndGetRespond(request: request, messages: messages)
     }
     
     func invoke(messages: [Message]) async -> String {
-        var request = chatRequest()
+        let request = chatRequest()
         return await sendMessageAndGetRespond(request: request, messages: messages)
     }
     
@@ -52,7 +60,7 @@ class DeepSeek: LLMProtocol {
         var request = URLRequest(url: chatURL())
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("Bearer \(LLMKey.value(for: .deepSeek))", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization")
         
         return request
     }
@@ -64,19 +72,54 @@ class DeepSeek: LLMProtocol {
         ]
     }
     
+    // MARK: - DeepSeek API Response Models
+    private struct DeepSeekChatResponse: Codable {
+        struct Choice: Codable {
+            let index: Int?
+            let message: DeepSeekChoiceMessage
+            let finish_reason: String?
+        }
+        let id: String?
+        let object: String?
+        let created: Int?
+        let model: String?
+        let choices: [Choice]
+    }
+    
+    private struct DeepSeekChoiceMessage: Codable {
+        let role: String
+        let content: String
+    }
+    
     private func sendMessageAndGetRespond(request: URLRequest, messages: [Message]) async -> String {
-        var chatMsgBody = makeChatMessageBody(messages: messages)
+        let chatMsgBody = makeChatMessageBody(messages: messages)
         
         guard let chatMsgBodyJson = try? JSONEncoder().encode(chatMsgBody) else {
             return "Failed to encode user content"
         }
         
         do {
-            let(data, _) = try await URLSession.shared.upload(for: request, from: chatMsgBodyJson)
+            let (data, response) = try await URLSession.shared.upload(for: request, from: chatMsgBodyJson)
             
-            //TODO: receive data
-            return ""
+            if let http = response as? HTTPURLResponse, !(200...299).contains(http.statusCode) {
+                let body = String(data: data, encoding: .utf8) ?? "<non-utf8 body>"
+                return "HTTP \(http.statusCode): \(body)"
+            }
             
+            // Try to decode DeepSeek chat completion response
+            if let chat = try? JSONDecoder().decode(DeepSeekChatResponse.self, from: data) {
+                if let first = chat.choices.first {
+                    return first.message.content
+                } else {
+                    return "No choices returned from API."
+                }
+            }
+            
+            // Fallback: return raw string if JSON shape differs
+            if let text = String(data: data, encoding: .utf8) {
+                return text
+            }
+            return "Received non-textual response."
         } catch {
             return "some error happened, please try again"
         }
@@ -90,3 +133,4 @@ class DeepSeek: LLMProtocol {
         )
     }
 }
+
