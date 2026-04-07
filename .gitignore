@@ -62,4 +62,4 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 
 # ignore a specific file
-Config.swift
+InitKey.swift
