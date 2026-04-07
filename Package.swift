@@ -15,11 +15,18 @@ let package = Package(
             name: "LangSwift",
             targets: ["LangSwift"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/MacPaw/OpenAI.git", branch: "main")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "LangSwift"),
+            name: "LangSwift",
+            dependencies: [
+                .product(name: "OpenAI", package: "OpenAI")
+            ]
+        ),
         .testTarget(
             name: "LangSwiftTests",
             dependencies: ["LangSwift"]
