@@ -8,7 +8,7 @@ import Testing
 @testable import LangSwift
 
 @Test func testOpenAISendMessage() async throws {
-    InitKey.initKey()
+    InitKey.initKeys()
     
     let openai = OpenAI_LLM()
     let resp = try! await openai.invoke(userContent: "give me some icecream")
