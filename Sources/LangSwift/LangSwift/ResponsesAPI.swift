@@ -6,12 +6,12 @@
 //
 
 class ResponsesAPI: LLMProtocol {
-    private var llm: OpenAI
+    private var llm: ResponsesModel
     private var mode: String
     
     init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
-        let configuration = OpenAI.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
-        self.llm = OpenAI(configuration: configuration)
+        let configuration = ResponsesModel.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
+        self.llm = ResponsesModel(configuration: configuration)
         self.mode = mode
         
     }
@@ -22,7 +22,7 @@ class ResponsesAPI: LLMProtocol {
             model: self.mode
         )
         
-        let response: ResponseObject = try await llm.responses.createResponse(query: query)
+        let response: ResponseObject = try await llm.createResponse(query: query)
         for output in response.output {
             switch output {
             case .outputMessage(let outputMessage):

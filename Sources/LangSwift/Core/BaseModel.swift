@@ -1,10 +1,9 @@
 //
-//  LLM.swift
+//  BaseModel.swift
 //  LangSwift
 //
-//  Created by ke Liu on 1/3/26.
+//  Created by ke Liu on 4/26/26.
 //
-
 import Foundation
 
 enum LLMKey: String {
@@ -31,9 +30,6 @@ enum LLMKey: String {
     }
 }
 
-
-
-
 enum LLMError: Error, LocalizedError {
     case missingAPIKey
     case invalidBaseURL(String)
@@ -57,64 +53,7 @@ enum LLMError: Error, LocalizedError {
     }
 }
 
-struct ChatQuery: Encodable {
-    let messages: [Message]
-    let model: Model
-    let temperature: Double?
-    let maxTokens: Int?
-
-    init(
-        messages: [Message],
-        model: Model,
-        temperature: Double? = nil,
-        maxTokens: Int? = nil
-    ) {
-        self.messages = messages
-        self.model = model
-        self.temperature = temperature
-        self.maxTokens = maxTokens
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case messages
-        case model
-        case temperature
-        case maxTokens = "max_tokens"
-    }
-
-    func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(messages.map(ChatRequestMessage.init(message:)), forKey: .messages)
-        try container.encode(model, forKey: .model)
-        try container.encodeIfPresent(temperature, forKey: .temperature)
-        try container.encodeIfPresent(maxTokens, forKey: .maxTokens)
-    }
-}
-
-private struct ChatRequestMessage: Encodable {
-    let role: Role
-    let content: String
-
-    init(message: Message) {
-        self.role = message.role
-        self.content = message.content
-    }
-}
-
-struct ChatCompletionResponse: Decodable {
-    let choices: [ChatChoice]
-}
-
-struct ChatChoice: Decodable {
-    let message: ChatResponseMessage
-}
-
-struct ChatResponseMessage: Decodable {
-    let role: Role?
-    let content: String?
-}
-
-final class LLM {
+class BaseModel {
     struct Configuration {
         let token: String?
         let host: String
@@ -127,10 +66,10 @@ final class LLM {
         }
     }
 
-    private let configuration: Configuration
-    private let session: URLSession
-    private let jsonEncoder: JSONEncoder
-    private let jsonDecoder: JSONDecoder
+    let configuration: Configuration
+    let session: URLSession
+    let jsonEncoder: JSONEncoder
+    let jsonDecoder: JSONDecoder
 
     init(configuration: Configuration, session: URLSession = .shared) {
         self.configuration = configuration
@@ -138,14 +77,7 @@ final class LLM {
         self.jsonEncoder = JSONEncoder()
         self.jsonDecoder = JSONDecoder()
     }
-
-    func chats(query: ChatQuery) async throws -> ChatCompletionResponse {
-        let request = try makeRequest(path: "/v1/chat/completions", body: query)
-        let (data, response) = try await session.data(for: request)
-        try validate(response: response, data: data)
-        return try jsonDecoder.decode(ChatCompletionResponse.self, from: data)
-    }
-
+    
     func makeRequest<Body: Encodable>(path: String, body: Body) throws -> URLRequest {
         guard let token = configuration.token, token.isEmpty == false else {
             throw LLMError.missingAPIKey
@@ -173,11 +105,7 @@ final class LLM {
             throw LLMError.requestFailed(statusCode: httpResponse.statusCode, body: body)
         }
     }
-
-    func decode<Response: Decodable>(_ type: Response.Type, from data: Data) throws -> Response {
-        try jsonDecoder.decode(type, from: data)
-    }
-
+    
     private func makeURL(path: String) -> URL? {
         let host = configuration.host.trimmingCharacters(in: .whitespacesAndNewlines)
         let baseURLString = host.contains("://") ? host : "https://\(host)"
@@ -187,5 +115,9 @@ final class LLM {
         }
 
         return baseURL.appendingPathComponent(path.trimmingCharacters(in: CharacterSet(charactersIn: "/")))
+    }
+    
+    func decode<Response: Decodable>(_ type: Response.Type, from data: Data) throws -> Response {
+        try jsonDecoder.decode(type, from: data)
     }
 }

@@ -6,12 +6,12 @@
 //
 
 class ChatCompletions: LLMProtocol {
-    private var llm: LLM
+    private var llm: CompletionModel
     private var mode: String
     
     init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
-        let configuration = LLM.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
-        self.llm = LLM(configuration: configuration)
+        let configuration = CompletionModel.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
+        self.llm = CompletionModel(configuration: configuration)
         self.mode = mode
     }
     

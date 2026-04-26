@@ -84,3 +84,13 @@ struct OutputTextContentObject: Decodable {
 struct RefusalContentObject: Decodable {
     let refusal: String
 }
+
+final class ResponsesModel: BaseModel {
+    func createResponse(query: CreateModelResponseQuery) async throws -> ResponseObject {
+        let request = try makeRequest(path: "/v1/responses", body: query)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        try validate(response: response, data: data)
+        return try decode(ResponseObject.self, from: data)
+    }
+}
+
