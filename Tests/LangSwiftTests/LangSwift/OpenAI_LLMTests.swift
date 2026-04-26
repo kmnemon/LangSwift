@@ -10,7 +10,7 @@ import Testing
 @Test func testOpenAISendMessage() async throws {
     InitKey.initKeys()
     
-    let openai = OpenAI_LLM()
+    let openai = ChatCompletions()
     let resp = try! await openai.invoke(userContent: "give me some icecream")
     
     print(resp)
