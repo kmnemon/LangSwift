@@ -28,6 +28,25 @@ struct RunnableTests {
         #expect(result.contains("24GB memory"))
         #expect(result.contains("1TB storage"))
     }
+    
+    @Test func promptLLMStringParserChainReturnsModelTextReal() async throws {
+        InitKey.initKeys()
+        
+        let prompt = ChatPromptTemplate.fromTemplate(
+            "Extract the technical specifications from the following text:\n\n{text_input}"
+        )
+        let llm = ChatCompletions()
+
+        let chain = prompt | llm
+        let result = try await chain.invoke([
+            "text_input": "The laptop has an M4 CPU, 24GB memory, and 1TB storage."
+        ])
+
+        print(result)
+        #expect(result.contains("M4"))
+        #expect(result.contains("24GB"))
+        #expect(result.contains("1TB"))
+    }
 
     @Test func promptChainCanBeInvokedWithCallSyntax() async throws {
         let prompt = ChatPromptTemplate.fromTemplate("Summarize {topic}")
@@ -105,6 +124,8 @@ struct RunnableTests {
             Issue.record("Wrong error thrown: \(error)")
         }
     }
+    
+    
 }
 
 private struct EchoLLM: LLMProtocol {
@@ -156,3 +177,4 @@ private struct ThrowingLLM: LLMProtocol {
 private enum ChainTestError: Error, Equatable {
     case llmFailed
 }
+
