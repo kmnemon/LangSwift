@@ -5,18 +5,18 @@
 //  Created by ke Liu on 1/3/26.
 //
 
-class ResponsesAPI: LLMProtocol {
+public final class ResponsesAPI: LLMProtocol {
     private var llm: ResponsesModel
     private var mode: String
     
-    init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
+    public init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
         let configuration = ResponsesModel.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
         self.llm = ResponsesModel(configuration: configuration)
         self.mode = mode
         
     }
     
-    func invoke(userContent: String) async throws -> String {
+    public func invoke(userContent: String) async throws -> String {
         let query = CreateModelResponseQuery(
             input: .textInput(userContent),
             model: self.mode
@@ -44,7 +44,7 @@ class ResponsesAPI: LLMProtocol {
         return "waht"
     }
     
-    func invoke(messages: [Message]) async -> String {
-        return ""
+    public func invoke(messages: [Message]) async throws -> String {
+        try await invoke(userContent: messages.map(\.content).joined(separator: "\n"))
     }
 }

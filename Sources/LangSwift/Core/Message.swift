@@ -5,21 +5,21 @@
 //  Created by ke on 1/9/26.
 //
 
-enum Role: String, Codable {
+public enum Role: String, Codable {
     case system
     case user
     case assistant
     case tool
 }
 
-enum Message: Codable {
+public enum Message: Codable {
     case system(String)
     case user(String)
     case assistant(String)
     case tool(String)
 }
 
-extension Message {
+public extension Message {
     var role: Role {
         switch self {
         case .system: return .system
@@ -39,4 +39,3 @@ extension Message {
         }
     }
 }
-

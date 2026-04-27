@@ -16,3 +16,17 @@ import Testing
     print(resp)
     #expect(resp != "")
 }
+
+@Test func testOpenAISendMessageWithTemplate() async throws {
+    InitKey.initKeys()
+    
+    let openai = ChatCompletions()
+    let template = ChatPromptTemplate.fromTemplate("I need some {item}")
+    let templateMessage = try template.format(["item" : "books"])
+    
+    let resp = try! await openai.invoke(userContent: templateMessage)
+    
+    print(resp)
+    #expect(resp != "")
+}
+
