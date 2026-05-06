@@ -50,42 +50,42 @@ public extension Model {
     /// https://platform.openai.com/docs/models/gpt-4.5-preview
     @available(*, deprecated, message: "On April 14th, 2025, developers were notified that the gpt-4.5-preview model is deprecated and will be removed from the API in the coming months. Recommended replacement: gpt-4.1")
     static let gpt4_5_preview = "gpt-4.5-preview"
-
+    
     // GPT-5.1
-
+    
     /// `gpt-5.1` Enhanced version of GPT-5 with improved reasoning and performance
     static let gpt5_1 = "gpt-5.1"
-
+    
     /// `gpt-5.1-chat-latest` Latest GPT-5.1 model optimized for chat interactions
     static let gpt5_1_chat_latest = "gpt-5.1-chat-latest"
-
+    
     // GPT-5
-
+    
     /// `gpt-5` OpenAI's best AI system with significant leap in intelligence, designed for logic and multi-step tasks with deep reasoning
     static let gpt5 = "gpt-5"
-
+    
     /// `gpt-5-mini` Lightweight GPT-5 version for cost-sensitive applications
     static let gpt5_mini = "gpt-5-mini"
-
+    
     /// `gpt-5-nano` Optimized for ultra-low latency and fast execution
     static let gpt5_nano = "gpt-5-nano"
-
+    
     /// `gpt-5-chat` Built for advanced, natural, multimodal conversations
     static let gpt5_chat = "gpt-5-chat"
-
+    
     // GPT-4.1
-
+    
     /// `gpt-4.1` Smartest model for complex tasks
     static let gpt4_1 = "gpt-4.1"
-
+    
     /// `gpt-4.1-mini` Affordable model balancing speed and intelligence
     static let gpt4_1_mini = "gpt-4.1-mini"
-
+    
     /// `gpt-4.1-nano` Fastest, most cost-effective model for low-latency tasks
     static let gpt4_1_nano = "gpt-4.1-nano"
-
+    
     // GPT-4
-
+    
     /// `gpt-4o`, currently the most advanced, multimodal flagship model that's cheaper and faster than GPT-4 Turbo.
     static let gpt4_o = "gpt-4o"
     
@@ -102,10 +102,10 @@ public extension Model {
     
     /// `gpt-4o-mini`: Currently the most affordable and intelligent model for fast and lightweight requests.
     static let gpt4_o_mini = "gpt-4o-mini"
-
+    
     /// `gpt-4o-mini-audio-preview`, this is a preview release of the smaller GPT-4o Audio mini model. It's designed to input audio or create audio outputs via the REST API.
     static let gpt_4o_mini_audio_preview = "gpt-4o-mini-audio-preview"
-
+    
     // MARK: - Realtime models
     // Models capable of realtime text and audio inputs and outputs.
     
@@ -159,7 +159,7 @@ public extension Model {
     /// Snapshot of `gpt-4-32k` from March 14th 2023. Unlike `gpt-4-32k`, this model will not receive updates, and will only be supported for a three month period ending on June 14th 2023.
     @available(*, deprecated, message: "Please upgrade to the newer model")
     static let gpt4_32k_0314 = "gpt-4-32k-0314"
-
+    
     // MARK: GPT-3.5
     
     /// Most capable `gpt-3.5-turbo` model and optimized for chat. Will be updated with our latest model iteration.
@@ -196,20 +196,20 @@ public extension Model {
     static let tts_1_hd = "tts-1-hd"
     
     // MARK: - Transcriptions / Translations
-
+    
     /// Whisper is a general-purpose speech recognition model, trained on a large dataset of diverse audio. You can also use it as a multitask model to perform multilingual speech recognition as well as speech translation and language identification.
     static let whisper_1 = "whisper-1"
     /// GPT-4o Transcribe is a speech-to-text model that uses GPT-4o to transcribe audio. It offers improvements to word error rate and better language recognition and accuracy compared to original Whisper models. Use it for more accurate transcripts.
     static let gpt_4o_transcribe = "gpt-4o-transcribe"
     /// GPT-4o mini Transcribe is a speech-to-text model that uses GPT-4o mini to transcribe audio. It offers improvements to word error rate and better language recognition and accuracy compared to original Whisper models. Use it for more accurate transcripts.
     static let gpt_4o_mini_transcribe = "gpt-4o-mini-transcribe"
-
+    
     // MARK: - Image Generation
     
     static let dall_e_2 = "dall-e-2"
     static let dall_e_3 = "dall-e-3"
     static let gpt_image_1 = "gpt-image-1"
-
+    
     // MARK: - Fine Tunes
     
     /// Most capable GPT-3 model. Can do any task the other models can do, often with higher quality.
@@ -261,4 +261,10 @@ public extension Model {
     ///
     /// Responses API: https://platform.openai.com/docs/api-reference/responses
     static let computer_use_preview = "computer-use-preview"
+    
+    static let all: [Model] = [
+        .gpt5_1,
+        .o4_mini,
+        .o3
+    ]
 }
