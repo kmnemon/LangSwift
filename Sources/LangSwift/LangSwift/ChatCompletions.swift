@@ -5,7 +5,7 @@
 //  Created by ke Liu on 1/8/26.
 //
 
-public final class ChatCompletions: LLMProtocol {
+public class ChatCompletions: LLMProtocol {
     private var llm: CompletionModel
     private var mode: String
     
