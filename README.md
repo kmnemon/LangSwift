@@ -18,7 +18,7 @@ and "storage" as keys:
 {specifications}
 """)
 
-let llm = ChatCompletions()
+let llm = OpenAI()
 
 let extractionChain = promptExtract | llm | StrOutputParser()
 let specifications = try await extractionChain.invoke([

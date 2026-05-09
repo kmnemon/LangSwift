@@ -10,7 +10,7 @@ import Testing
 @Test func testOpenAISendMessage() async throws {
     InitKey.initKeys()
     
-    let openai = ChatCompletions()
+    let openai = OpenAI()
     let resp = try! await openai.invoke(userContent: "give me some icecream")
     
     print(resp)
@@ -29,4 +29,3 @@ import Testing
     print(resp)
     #expect(resp != "")
 }
-

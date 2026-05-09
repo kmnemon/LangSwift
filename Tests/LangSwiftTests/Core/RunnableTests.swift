@@ -35,7 +35,7 @@ struct RunnableTests {
         let prompt = ChatPromptTemplate.fromTemplate(
             "Extract the technical specifications from the following text:\n\n{text_input}"
         )
-        let llm = ChatCompletions()
+        let llm = OpenAI()
 
         let chain = prompt | llm
         let result = try await chain.invoke([
@@ -177,4 +177,3 @@ private struct ThrowingLLM: LLMProtocol {
 private enum ChainTestError: Error, Equatable {
     case llmFailed
 }
-
