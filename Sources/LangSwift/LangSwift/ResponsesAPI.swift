@@ -5,7 +5,7 @@
 //  Created by ke Liu on 1/3/26.
 //
 
-public final class ResponsesAPI: LLMProtocol {
+class ResponsesAPI: LLMProtocol {
     private var llm: ResponsesModel
     private var mode: String
     

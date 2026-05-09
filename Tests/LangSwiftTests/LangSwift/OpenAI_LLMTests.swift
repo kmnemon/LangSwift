@@ -20,7 +20,7 @@ import Testing
 @Test func testOpenAISendMessageWithTemplate() async throws {
     InitKey.initKeys()
     
-    let openai = ChatCompletions()
+    let openai = OpenAI()
     let template = ChatPromptTemplate.fromTemplate("I need some {item}")
     let templateMessage = try template.format(["item" : "books"])
     
