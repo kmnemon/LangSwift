@@ -11,19 +11,19 @@ public enum LLMKey: String {
     case deepSeek = "DEEPSEEK_API_KEY"
     case qwen = "QWEN_API_KEY"
     
-    static func value(for key: LLMKey) -> String? {
+    public static func value(for key: LLMKey) -> String? {
         ProcessInfo.processInfo.environment[key.rawValue]
     }
     
     @discardableResult
-    static func setValue(_ value: String, for key: LLMKey, overwrite: Bool = true) -> Bool {
+    public static func setValue(_ value: String, for key: LLMKey, overwrite: Bool = true) -> Bool {
         // setenv returns 0 on success, -1 on failure
         let result = setenv(key.rawValue, value, overwrite ? 1 : 0)
         return result == 0
     }
     
     @discardableResult
-    static func clearValue(for key: LLMKey) -> Bool {
+    public static func clearValue(for key: LLMKey) -> Bool {
         // unsetenv returns 0 on success, -1 on failure
         let result = unsetenv(key.rawValue)
         return result == 0
