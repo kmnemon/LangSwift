@@ -264,6 +264,7 @@ public extension Model {
     
     static let all: [Model] = [
         .gpt5_1,
+        .gpt4_o_mini,
         .o4_mini,
         .o3
     ]
