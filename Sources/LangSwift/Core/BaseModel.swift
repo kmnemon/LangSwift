@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum LLMKey: String {
+public enum LLMKey: String {
     case openAI = "OPENAI_API_KEY"
     case deepSeek = "DEEPSEEK_API_KEY"
     case qwen = "QWEN_API_KEY"
