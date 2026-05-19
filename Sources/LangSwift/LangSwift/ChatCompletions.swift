@@ -9,8 +9,17 @@ class ChatCompletions: LLMProtocol {
     private var llm: CompletionModel
     private var mode: String
     
-    public init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
-        let configuration = CompletionModel.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
+    public init(
+        mode: String = .gpt4_o_mini,
+        baseURL: String = "api.chatanywhere.tech",
+        temperature: Double? = nil
+    ) {
+        let configuration = CompletionModel.Configuration(
+            token: LLMKey.value(for: LLMKey.openAI),
+            host: baseURL,
+            timeoutInterval: 60.0,
+            temperature: temperature
+        )
         self.llm = CompletionModel(configuration: configuration)
         self.mode = mode
     }
@@ -20,7 +29,8 @@ class ChatCompletions: LLMProtocol {
             messages: [
                 .user(userContent)
             ],
-            model: self.mode
+            model: self.mode,
+            temperature: llm.configuration.temperature
         )
         
         let result = try await llm.chats(query: query)
@@ -30,7 +40,8 @@ class ChatCompletions: LLMProtocol {
     public func invoke(messages: [Message]) async throws -> String {
         let query = ChatQuery(
             messages: messages,
-            model: self.mode
+            model: self.mode,
+            temperature: llm.configuration.temperature
         )
         
         let result = try await llm.chats(query: query)

@@ -58,11 +58,18 @@ class BaseModel {
         let token: String?
         let host: String
         let timeoutInterval: TimeInterval
+        let temperature: Double?
 
-        init(token: String?, host: String = "api.openai.com", timeoutInterval: TimeInterval = 60.0) {
+        init(
+            token: String?,
+            host: String = "api.openai.com",
+            timeoutInterval: TimeInterval = 60.0,
+            temperature: Double? = nil
+        ) {
             self.token = token
             self.host = host
             self.timeoutInterval = timeoutInterval
+            self.temperature = temperature
         }
     }
 

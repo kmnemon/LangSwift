@@ -8,8 +8,12 @@
 public final class OpenAI: Runnable {
     private let chatCompletions: ChatCompletions
     
-    public init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
-        self.chatCompletions = ChatCompletions(mode: mode, baseURL: baseURL)
+    public init(
+        mode: String = .gpt4_o_mini,
+        baseURL: String = "api.chatanywhere.tech",
+        temperature: Double? = nil
+    ) {
+        self.chatCompletions = ChatCompletions(mode: mode, baseURL: baseURL, temperature: temperature)
     }
 
     public func invoke(userContent: String) async throws -> String {

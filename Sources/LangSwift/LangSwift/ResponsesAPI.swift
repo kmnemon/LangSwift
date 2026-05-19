@@ -9,8 +9,17 @@ class ResponsesAPI: LLMProtocol {
     private var llm: ResponsesModel
     private var mode: String
     
-    public init(mode: String = .gpt4_o_mini, baseURL: String = "api.chatanywhere.tech") {
-        let configuration = ResponsesModel.Configuration(token: LLMKey.value(for: LLMKey.openAI), host: baseURL, timeoutInterval: 60.0)
+    public init(
+        mode: String = .gpt4_o_mini,
+        baseURL: String = "api.chatanywhere.tech",
+        temperature: Double? = nil
+    ) {
+        let configuration = ResponsesModel.Configuration(
+            token: LLMKey.value(for: LLMKey.openAI),
+            host: baseURL,
+            timeoutInterval: 60.0,
+            temperature: temperature
+        )
         self.llm = ResponsesModel(configuration: configuration)
         self.mode = mode
         
@@ -19,7 +28,8 @@ class ResponsesAPI: LLMProtocol {
     public func invoke(userContent: String) async throws -> String {
         let query = CreateModelResponseQuery(
             input: .textInput(userContent),
-            model: self.mode
+            model: self.mode,
+            temperature: llm.configuration.temperature
         )
         
         let response: ResponseObject = try await llm.createResponse(query: query)

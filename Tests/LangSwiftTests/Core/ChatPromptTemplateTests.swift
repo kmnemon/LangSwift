@@ -76,3 +76,7 @@ import Testing
     
     #expect(templateMessage == "I need some books")
 }
+
+@Test func testSupportSystemMessage() throws {
+    
+}

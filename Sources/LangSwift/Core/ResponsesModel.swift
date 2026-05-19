@@ -10,6 +10,13 @@ import Foundation
 struct CreateModelResponseQuery: Encodable {
     let input: ResponseInput
     let model: Model
+    let temperature: Double?
+
+    init(input: ResponseInput, model: Model, temperature: Double? = nil) {
+        self.input = input
+        self.model = model
+        self.temperature = temperature
+    }
 }
 
 enum ResponseInput: Encodable {
@@ -93,4 +100,3 @@ final class ResponsesModel: BaseModel {
         return try decode(ResponseObject.self, from: data)
     }
 }
-
