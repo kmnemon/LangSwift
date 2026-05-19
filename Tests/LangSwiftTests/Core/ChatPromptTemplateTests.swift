@@ -78,5 +78,11 @@ import Testing
 }
 
 @Test func testSupportSystemMessage() throws {
+    let template = ChatPromptTemplate.fromMessages([
+        (.system,"Analyze the user's request:"),
+        (.user, "{request}")
+    ])
+    let templateMessage = try template.format(["request": "aha"])
     
+    #expect(templateMessage == "Analyze the user's request:\naha")
 }
